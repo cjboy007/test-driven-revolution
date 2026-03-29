@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Logs
+logs/
+*.log
+
+# Tasks (runtime data)
+tasks/
+
+# Outputs (runtime data)
+outputs/
+
+# Test results (runtime data)
+test-results/
+
+# Archive (old tasks)
+archive/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Lock files (keep package-lock.json if exists)
+# package-lock.json
