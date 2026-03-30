@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * heartbeat-coordinator.js - main-agent 心跳协调器
+ * heartbeat-coordinator.js - Wilson 心跳协调器
  * 
  * 职责：
  * 1. 激活依赖完成的任务（queued → pending）
@@ -181,14 +181,14 @@ async function reviewTask(task) {
   logEvent('review_started', {
     task_id: task.task_id,
     current_iteration: task.current_iteration,
-    model: 'advanced-model/sonnet'
+    model: 'aiberm/claude-sonnet-4-6'
   });
   
   // 调用 trigger-review.js 脚本
   // 这个脚本会：
   // 1. 将任务状态改为 reviewing
   // 2. 生成审阅 prompt
-  // 3. 通过 OpenClaw 消息系统发送到 main-agent 会话（用 Sonnet 模型）
+  // 3. 通过 OpenClaw 消息系统发送到 Wilson 会话（用 Sonnet 模型）
   
   try {
     const output = execSync(
@@ -199,15 +199,15 @@ async function reviewTask(task) {
     console.log(output);
     
     // trigger-review.js 会输出审阅 prompt
-    // 在实际部署中，这里应该自动发送到 main-agent 的 messaging-session 会话
-    // 让 main-agent 用 Sonnet 模型审阅
+    // 在实际部署中，这里应该自动发送到 Wilson 的 Discord 会话
+    // 让 Wilson 用 Sonnet 模型审阅
     
     // 简化版本：返回提示，让心跳暂停等待人工触发
     // 完整版本：需要集成 OpenClaw 的消息系统
     
     console.log('⚠️ 需要人工触发 Sonnet 审阅');
     console.log('运行：node scripts/trigger-review.js ' + task.task_id);
-    console.log('然后复制 prompt 到 main-agent 会话（用 Sonnet 模型）');
+    console.log('然后复制 prompt 到 Wilson 会话（用 Sonnet 模型）');
     
     return {
       pending: true,
@@ -278,7 +278,7 @@ function updateTaskAfterReview(task, review) {
  * 主流程
  */
 async function heartbeat() {
-  console.log('🫀 main-agent 心跳开始...');
+  console.log('🫀 Wilson 心跳开始...');
   console.log('='.repeat(50));
   
   logEvent('heartbeat_started', { agent: 'wilson' });
@@ -350,7 +350,7 @@ async function heartbeat() {
     }
     
     console.log('='.repeat(50));
-    console.log(`🫀 main-agent 心跳完成，处理 ${processedCount} 个任务`);
+    console.log(`🫀 Wilson 心跳完成，处理 ${processedCount} 个任务`);
     
     logEvent('heartbeat_completed', {
       processed: processedCount,

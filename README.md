@@ -1,14 +1,6 @@
-# Test-Driven Revolution
+# Test-Driven Revolution - 快速开始
 
 **5 分钟上手测试驱动的 AI 自动进化系统**
-
-[![ClawHub](https://img.shields.io/badge/ClawHub-Skill%20Page-blue)](https://clawhub.com/skills/test-driven-revolution)
-[![GitHub](https://img.shields.io/badge/GitHub-Source%20Code-black)](https://github.com/cjboy007/test-driven-revolution)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-> 📦 **ClawHub Skill:** 在 ClawHub 安装此技能  
-> 💻 **GitHub:** 源代码和文档  
-> 🚀 **快速开始:** 5 分钟上手
 
 ---
 
@@ -33,7 +25,7 @@
 ## 🔄 完整工作流
 
 ```
-Planner (Qwen) → Reviewer (Sonnet) → Executor (Qwen) → Auditor (Qwen) → 下一轮
+Planner (协调模型) → Reviewer (高级模型) → Executor (默认模型) → Auditor (高级模型) → 下一轮
 ```
 
 **角色说明：**
@@ -42,13 +34,13 @@ Planner (Qwen) → Reviewer (Sonnet) → Executor (Qwen) → Auditor (Qwen) → 
 - **Executor（执行员）**：执行指令，生成代码
 - **Auditor（审核员）**：审核执行结果
 
-**实现示例：** main-agent/Sonnet/executor-agent/Qwen（可替换为任意 agent）
+**实现示例：** 主 Agent/高级模型/审计 Agent/协调模型（可替换为任意 agent）
 
 **角色说明：**
-- **main-agent**：检测任务，触发审阅（Qwen 包月）
-- **Sonnet**：决策下一步指令（付费）
-- **executor-agent**：执行指令（Qwen 包月）
-- **Auditor**：审核执行结果是否达标（Qwen 包月）
+- **主 Agent**：检测任务，触发审阅（协调模型）
+- **高级模型**：决策下一步指令（付费）
+- **审计 Agent**：执行指令（协调模型）
+- **Auditor**：审核执行结果是否达标（协调模型）
 
 ---
 
@@ -60,38 +52,38 @@ Planner (Qwen) → Reviewer (Sonnet) → Executor (Qwen) → Auditor (Qwen) → 
 # Step 1: 生成规划 Prompt
 node scripts/auto-plan.js "创建一个 HTTP 服务器，监听 3000 端口"
 
-# Step 2: 复制 Prompt 到 Sonnet 会话（advanced-model/sonnet）
+# Step 2: 复制 Prompt 到高级模型会话
 
-# Step 3: 保存 Sonnet 返回的 JSON
+# Step 3: 保存返回的 JSON
 
 # Step 4: 创建任务
 node scripts/auto-plan.js --create plan-result.json
 ```
 
-**固定使用 Sonnet 拆解任务，确保规划质量。**
+**固定使用高级模型拆解任务，确保规划质量。**
 
 ### 1. 配置 Cron（一次性）
 
 ```bash
-# main-agent 心跳 - 每 5 分钟
+# 主 Agent 心跳 - 每 5 分钟
 openclaw cron add \
-  --name "tdr-wilson-heartbeat" \
+  --name "tdr-main-heartbeat" \
   --schedule "*/5 * * * *" \
-  --agent wilson \
-  --message "cd <workspace>/workspace/skills/test-driven-revolution && node scripts/heartbeat-coordinator.js"
+  --agent main \
+  --message "cd <workspace>/skills/test-driven-revolution && node scripts/heartbeat-coordinator.js"
 
-# executor-agent 心跳 - 每 5 分钟（错开 2 分钟）
+# 审计 Agent 心跳 - 每 5 分钟（错开 2 分钟）
 openclaw cron add \
-  --name "tdr-iron-heartbeat" \
+  --name "tdr-auditor-heartbeat" \
   --schedule "2,7,12,17,22,27,32,37,42,47,52,57 * * * *" \
-  --agent iron \
-  --message "cd <workspace>/workspace/skills/test-driven-revolution && node scripts/iron-heartbeat.js"
+  --agent auditor \
+  --message "cd <workspace>/skills/test-driven-revolution && node scripts/auditor-heartbeat.js"
 ```
 
 ### 2. 创建第一个任务
 
 ```bash
-cd <workspace>/workspace/skills/test-driven-revolution
+cd <workspace>/skills/test-driven-revolution
 
 cat > tasks/task-001.json << 'EOF'
 {
@@ -114,21 +106,21 @@ cat > tasks/task-001.json << 'EOF'
 EOF
 ```
 
-### 3. 触发 main-agent 心跳
+### 3. 触发主 Agent 心跳
 
 ```bash
 # 手动触发（Cron 会自动运行）
 node scripts/heartbeat-coordinator.js
 ```
 
-### 4. 触发 Sonnet 审阅
+### 4. 触发审阅
 
 ```bash
 # 输出审阅 Prompt
 node scripts/trigger-review.js task-001
 
-# 复制输出的 Prompt，在 main-agent 会话中用 Sonnet 模型发送
-# 保存 Sonnet 返回的 JSON 到 review-result.json
+# 复制输出的 Prompt，在主 Agent 会话中用高级模型发送
+# 保存返回的 JSON 到 review-result.json
 ```
 
 ### 5. 应用审阅结果
@@ -141,10 +133,10 @@ node scripts/apply-review.js task-001 --file review-result.json
 cat review-result.json | node scripts/apply-review.js task-001 --stdin
 ```
 
-### 6. 运行 executor-agent 心跳
+### 6. 运行审计 Agent 心跳
 
 ```bash
-node scripts/iron-heartbeat.js
+node scripts/auditor-heartbeat.js
 ```
 
 ### 7. 查看进度
@@ -268,7 +260,7 @@ cat tasks/task-001.json | jq '.history[-1]'
 bash scripts/unblock-task.sh task-001 --note "修复执行错误"
 
 # 3. 重新执行
-node scripts/iron-heartbeat.js
+node scripts/auditor-heartbeat.js
 ```
 
 ---
@@ -276,10 +268,10 @@ node scripts/iron-heartbeat.js
 ## 📖 完整文档
 
 - **SKILL.md** - 完整技能说明
-- **DESIGN.md** - 系统架构设计（在 <workspace>/workspace/evolution/）
+- **DESIGN.md** - 系统架构设计（在 `<workspace>/evolution/`）
 - **FIXES_SUMMARY.md** - P0/P1 修复总结
 
 ---
 
 **最后更新：** 2026-03-28  
-**维护者：** OpenClaw Community 🧠
+**维护者：** OpenClaw Community

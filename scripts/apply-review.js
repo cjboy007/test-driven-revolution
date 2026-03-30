@@ -153,9 +153,9 @@ if (review.verdict === 'complete') {
     console.log('🔄 重新执行（iteration +1）');
   }
 } else {
-  // approve 或 revise → reviewed，等待 executor-agent 执行
+  // approve 或 revise → reviewed，等待 Iron 执行
   task.status = 'reviewed';
-  console.log('⏳ 等待 executor-agent 执行');
+  console.log('⏳ 等待 Iron 执行');
 }
 
 // 记录到 history
@@ -166,7 +166,7 @@ task.history.push({
   verdict: review.verdict,
   confidence: review.confidence,
   feedback: review.feedback,
-  model: 'advanced-model/sonnet'
+  model: 'aiberm/claude-sonnet-4-6'
 });
 
 writeTask(task);
@@ -176,7 +176,7 @@ logEvent('review_applied', {
   from: oldStatus,
   to: task.status,
   verdict: review.verdict,
-  model: 'advanced-model/sonnet'
+  model: 'aiberm/claude-sonnet-4-6'
 });
 
 console.log('');
@@ -195,7 +195,7 @@ if (review.next_instructions) {
 console.log('');
 console.log('下一步：');
 if (task.status === 'reviewed') {
-  console.log('  运行 executor-agent 心跳执行指令：');
+  console.log('  运行 Iron 心跳执行指令：');
   console.log('  node scripts/iron-heartbeat.js');
 } else if (task.status === 'pending') {
   console.log('  重新触发审阅：');

@@ -108,7 +108,7 @@ ${requirement}
 
   logEvent('planning_started', {
     requirement,
-    model: 'advanced-model/sonnet',
+    model: 'aiberm/claude-sonnet-4-6',
     automated: true
   });
   
@@ -135,7 +135,7 @@ ${requirement}
     console.log('⚠️ 需要 OpenClaw sessions_spawn 支持');
     console.log('');
     console.log('在 OpenClaw 环境中，这会自动：');
-    console.log('1. sessions_spawn({ task: prompt, model: "advanced-model/sonnet" })');
+    console.log('1. sessions_spawn({ task: prompt, model: "aiberm/claude-sonnet-4-6" })');
     console.log('2. 等待 Sonnet 返回结果');
     console.log('3. 解析 JSON');
     console.log('4. 创建任务文件');
@@ -144,7 +144,7 @@ ${requirement}
     // 模拟调用（实际应该用真实的 sessions_spawn）
     // const result = await sessions_spawn({
     //   task: prompt,
-    //   model: 'advanced-model/sonnet',
+    //   model: 'aiberm/claude-sonnet-4-6',
     //   mode: 'run',
     //   runTimeoutSeconds: 180
     // });
@@ -189,7 +189,7 @@ function createTaskFile(plan, requirement) {
     history: [],
     created_at: new Date().toISOString(),
     planner: {
-      model: 'advanced-model/sonnet',
+      model: 'aiberm/claude-sonnet-4-6',
       planned_at: new Date().toISOString(),
       requirement: requirement,
       automated: true
@@ -204,7 +204,7 @@ function createTaskFile(plan, requirement) {
     complexity: plan.complexity_score,
     subtasks_count: plan.subtasks.length,
     requires_audit: task.requires_audit,
-    model: 'advanced-model/sonnet',
+    model: 'aiberm/claude-sonnet-4-6',
     automated: true
   });
   
@@ -245,7 +245,7 @@ async function autoPlan(requirement) {
       console.log('');
       console.log('请手动：');
       console.log('1. 复制上面的 Prompt');
-      console.log('2. 在 main-agent 会话中用 Sonnet 模型发送');
+      console.log('2. 在 Wilson 会话中用 Sonnet 模型发送');
       console.log('3. 保存结果为 JSON');
       console.log('4. 运行：node scripts/auto-plan.js --create result.json');
       console.log('');
@@ -259,7 +259,7 @@ async function autoPlan(requirement) {
     // Step 3: 自动开始执行（可选）
     console.log('🚀 自动开始执行...');
     console.log('');
-    console.log('运行 main-agent 心跳：');
+    console.log('运行 Wilson 心跳：');
     console.log('  node scripts/heartbeat-coordinator.js');
     console.log('');
     

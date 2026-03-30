@@ -35,9 +35,9 @@ AI 写代码 → AI 测试 → AI 改 bug → 测试通过 → 下一轮
 
 **角色说明：**
 - **Planner** - 负责任务分析和流程推荐（主 Agent）
-- **Reviewer** - 负责技术选型审查和指令生成（Gemini 3.1 Pro）
-- **Executor** - 负责代码执行和文件操作（GPT-5.4）⭐
-- **Auditor** - 负责质量审核和验证（Gemini 3.1 Pro）
+- **Reviewer** - 负责技术选型审查和指令生成（高级模型）
+- **Executor** - 负责代码执行和文件操作（默认模型）⭐
+- **Auditor** - 负责质量审核和验证（高级模型）
 
 系统特性：
 - 📊 **任务难度分析** - 自动评估复杂度/风险/时间要求
@@ -47,7 +47,7 @@ AI 写代码 → AI 测试 → AI 改 bug → 测试通过 → 下一轮
 - 🛡️ **安全扫描**：执行前检测危险命令模式
 - 📝 **事件日志**：所有操作追加 JSONL 日志
 - 🔗 **依赖激活**：依赖完成后自动激活下游任务
-- 💰 **成本控制**：Executor 统一使用 GPT-5.4
+- 💰 **成本控制**：Executor 统一使用默认模型
 
 ---
 
@@ -97,7 +97,7 @@ AI 写代码 → AI 测试 → AI 改 bug → 测试通过 → 下一轮
 
 **步骤：** Executor 直连（无审阅/审核）
 
-**模型：** Executor = `advanced-model/gpt`
+**模型：** Executor = `默认模型`
 
 **耗时：** ~5 分钟/任务
 
@@ -122,9 +122,9 @@ node scripts/auto-plan.js "更新 references 文档"
 **步骤：** Reviewer → Executor → Auditor
 
 **模型：**
-- Reviewer: `default-model/gemini-pro` → fallback → `advanced-model/gemini-pro`
-- Executor: `advanced-model/gpt`
-- Auditor: `default-model/gemini-pro` → fallback → `advanced-model/gemini-pro`
+- Reviewer: `高级模型` → fallback → `备用模型`
+- Executor: `默认模型`
+- Auditor: `高级模型` → fallback → `备用模型`
 
 **耗时：** ~15 分钟/任务
 
@@ -149,9 +149,9 @@ node scripts/auto-plan.js "实现 forward 命令"
 **步骤：** Reviewer → Executor → Auditor
 
 **模型：**
-- Reviewer: `anthropic/claude-sonnet-4-6`
-- Executor: `advanced-model/gpt`
-- Auditor: `anthropic/claude-sonnet-4-6`
+- Reviewer: `顶级模型`
+- Executor: `默认模型`
+- Auditor: `顶级模型`
 
 **耗时：** ~15 分钟/任务
 
@@ -220,7 +220,7 @@ node scripts/auto-plan.js "创建一个 HTTP 服务器，监听 3000 端口"
 # ❓ 请选择流程：
 # A. 简化流程（5 分钟，无审核）
 # B. 完整流程（15 分钟，有审核）⭐ 推荐
-# C. 高级流程（15 分钟，Sonnet 审核，付费）
+# C. 高级流程（15 分钟，顶级模型审核，付费）
 ```
 
 **用户确认后执行：**
@@ -282,13 +282,13 @@ node scripts/auto-execute.js task-001 --flow full
 {
   "roles": {
     "reviewer": {
-      "primary": "default-model/gemini-pro",
-      "fallback": "advanced-model/gemini-pro"
+      "primary": "高级模型",
+      "fallback": "备用模型"
     },
-    "executor": "advanced-model/gpt",
+    "executor": "默认模型",
     "auditor": {
-      "primary": "default-model/gemini-pro",
-      "fallback": "advanced-model/gemini-pro"
+      "primary": "高级模型",
+      "fallback": "备用模型"
     }
   },
   "timeouts": {
@@ -297,7 +297,7 @@ node scripts/auto-execute.js task-001 --flow full
     "auditor": 180
   },
   "enforceAudit": true,
-  "executorDefault": "advanced-model/gpt"
+  "executorDefault": "默认模型"
 }
 ```
 
@@ -308,9 +308,9 @@ node scripts/auto-execute.js task-001 --flow full
 | 特性 | 简化流程 | 完整流程 | 高级流程 |
 |------|----------|----------|----------|
 | **步骤** | Executor | Reviewer→Executor→Auditor | Reviewer→Executor→Auditor |
-| **Executor** | GPT-5.4 | GPT-5.4 | GPT-5.4 |
-| **Reviewer** | - | Gemini 3.1 Pro | Claude Sonnet 4.6 |
-| **Auditor** | - | Gemini 3.1 Pro | Claude Sonnet 4.6 |
+| **Executor** | 默认模型 | 默认模型 | 默认模型 |
+| **Reviewer** | - | 高级模型 | 顶级模型 |
+| **Auditor** | - | 高级模型 | 顶级模型 |
 | **耗时** | ~5m | ~15m | ~15m |
 | **成本** | 🆓 | 🆓 | 💰$$ |
 | **成功率** | ~80% | ~90% | ~95% |
@@ -392,7 +392,7 @@ node scripts/auto-execute.js task-001 --flow full
 
 - **文档更新** → 简化流程（快速、免费）
 - **新功能** → 完整流程（有审核、免费）
-- **安全修复** → 高级流程（Sonnet 审核、付费）
+- **安全修复** → 高级流程（顶级模型审核、付费）
 
 ### 3. 迭代控制
 

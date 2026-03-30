@@ -86,7 +86,7 @@ if (args.includes('--create')) {
       history: [],
       created_at: new Date().toISOString(),
       planner: {
-        model: 'advanced-model/sonnet',
+        model: 'aiberm/claude-sonnet-4-6',
         planned_at: new Date().toISOString()
       }
     };
@@ -98,7 +98,7 @@ if (args.includes('--create')) {
       task_id: taskId,
       complexity: plan.complexity_score,
       subtasks_count: plan.subtasks.length,
-      model: 'advanced-model/sonnet'
+      model: 'aiberm/claude-sonnet-4-6'
     });
     
     console.log(`✅ 任务已创建：${taskId}`);
@@ -106,7 +106,7 @@ if (args.includes('--create')) {
     console.log(`   子任务：${plan.subtasks.length} 个`);
     console.log(`   复杂度：${plan.complexity_score}/10`);
     console.log('');
-    console.log('下一步：运行 main-agent 心跳开始执行');
+    console.log('下一步：运行 Wilson 心跳开始执行');
     console.log('  node scripts/heartbeat-coordinator.js');
     
     process.exit(0);
@@ -127,7 +127,7 @@ if (!requirement) {
   console.log('');
   console.log('流程：');
   console.log('1. 运行：node scripts/task-planner.js "需求"');
-  console.log('2. 复制 Prompt 到 Sonnet 会话（advanced-model/sonnet）');
+  console.log('2. 复制 Prompt 到 Sonnet 会话（aiberm/claude-sonnet-4-6）');
   console.log('3. 保存 Sonnet 返回的 JSON');
   console.log('4. 运行：node scripts/task-planner.js --create result.json');
   process.exit(0);
@@ -189,7 +189,7 @@ ${requirement}
 
 logEvent('planning_started', {
   requirement,
-  model: 'advanced-model/sonnet'
+  model: 'aiberm/claude-sonnet-4-6'
 });
 
 console.log('📋 规划 Prompt（复制到 Sonnet 会话）：');
@@ -199,7 +199,7 @@ console.log('-'.repeat(50));
 console.log('');
 console.log('下一步：');
 console.log('1. 复制上面的 Prompt');
-console.log('2. 在 main-agent 会话中发送，使用 advanced-model/sonnet 模型');
+console.log('2. 在 Wilson 会话中发送，使用 aiberm/claude-sonnet-4-6 模型');
 console.log('3. 保存 Sonnet 返回的 JSON 到文件（如 plan-result.json）');
 console.log('4. 运行：node scripts/task-planner.js --create plan-result.json');
 console.log('');

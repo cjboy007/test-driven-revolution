@@ -3,12 +3,12 @@
  * auditor-review.js - Auditor 审核器
  * 
  * 职责：
- * 1. 审核 executor-agent 执行结果是否达标
+ * 1. 审核 Iron 执行结果是否达标
  * 2. 检查指令遵循、代码质量、测试验证
  * 3. 决定进入下一轮还是打回重做
  * 
  * 模型：Qwen（包月，无额外成本）
- * 触发：executor-agent 执行完成后自动调用
+ * 触发：Iron 执行完成后自动调用
  */
 
 const fs = require('fs');
@@ -79,7 +79,7 @@ function auditTask(task) {
   
   logEvent('audit_started', {
     task_id: task.task_id,
-    model: 'default-model/qwen-plus'
+    model: 'bailian/qwen3.5-plus'
   });
   
   // 构建审核 Prompt
@@ -93,7 +93,7 @@ ${JSON.stringify(task, null, 2)}
 ## 审核维度
 
 ### 1. 指令遵循
-executor-agent 是否严格按 review.next_instructions 执行？
+Iron 是否严格按 review.next_instructions 执行？
 - 执行了指令中的所有步骤？
 - 没有擅自添加/删减内容？
 
@@ -158,7 +158,7 @@ executor-agent 是否严格按 review.next_instructions 执行？
       task_id: task.task_id,
       verdict: result.verdict,
       confidence: result.confidence,
-      model: 'default-model/qwen-plus'
+      model: 'bailian/qwen3.5-plus'
     });
     
     return result;
@@ -274,7 +274,7 @@ function updateTaskAfterAudit(task, audit) {
     verdict: audit.verdict,
     confidence: audit.confidence,
     feedback: audit.feedback,
-    model: 'default-model/qwen-plus'
+    model: 'bailian/qwen3.5-plus'
   });
   
   writeTask(task);
@@ -296,7 +296,7 @@ function auditHeartbeat() {
   console.log('🔍 Auditor 心跳开始...');
   console.log('='.repeat(50));
   
-  logEvent('audit_heartbeat_started', { model: 'default-model/qwen-plus' });
+  logEvent('audit_heartbeat_started', { model: 'bailian/qwen3.5-plus' });
   
   try {
     const taskIds = listTasks();
@@ -333,7 +333,7 @@ function auditHeartbeat() {
     
     logEvent('audit_heartbeat_completed', {
       processed: processedCount,
-      model: 'default-model/qwen-plus'
+      model: 'bailian/qwen3.5-plus'
     });
     
     if (processedCount === 0) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * iron-heartbeat.js - executor-agent 心跳执行器
+ * iron-heartbeat.js - Iron 心跳执行器
  * 
  * 职责：
  * 1. 检测 reviewed 状态的任务
@@ -74,7 +74,7 @@ function updateTaskAfterAudit(task, audit) {
     verdict: audit.verdict,
     confidence: audit.confidence,
     feedback: audit.feedback,
-    model: 'default-model/qwen-plus'
+    model: 'bailian/qwen3.5-plus'
   });
   
   writeTask(task);
@@ -344,7 +344,7 @@ function updateTaskAfterExecution(task, result) {
  * 主流程
  */
 async function heartbeat() {
-  console.log('🔨 executor-agent 心跳开始...');
+  console.log('🔨 Iron 心跳开始...');
   console.log('='.repeat(50));
   
   logEvent('heartbeat_started', { agent: 'iron' });
@@ -395,7 +395,7 @@ async function heartbeat() {
     }
     
     console.log('='.repeat(50));
-    console.log(`🔨 executor-agent 心跳完成，处理 ${processedCount} 个任务`);
+    console.log(`🔨 Iron 心跳完成，处理 ${processedCount} 个任务`);
     
     logEvent('heartbeat_completed', {
       processed: processedCount,

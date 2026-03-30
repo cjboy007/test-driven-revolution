@@ -151,4 +151,4 @@ if [ -n "$note" ]; then
   echo "   备注：$note"
 fi
 echo ""
-echo "下一步：main-agent 心跳将自动检测到 pending 状态并进行审阅"
+echo "下一步：Wilson 心跳将自动检测到 pending 状态并进行审阅"
